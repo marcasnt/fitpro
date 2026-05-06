@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FITPRO COACH - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>FITPRO COACH</h2>
+      <p>Panel de Administración</p>
+    </div>
+    
+    <nav>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="#" class="nav-link active" data-view="dashboard">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-view="clients">
+            <span class="nav-icon">👥</span>
+            <span>Clientes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-view="routines">
+            <span class="nav-icon">📋</span>
+            <span>Rutinas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-view="exercises">
+            <span class="nav-icon">🏋️</span>
+            <span>Ejercicios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-view="history">
+            <span class="nav-icon">📈</span>
+            <span>Historial</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="coachAvatar">C</div>
+        <div class="user-details">
+          <div class="user-name" id="coachName">Coach</div>
+          <div class="user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm btn-block" id="logoutBtn" style="margin-top: 0.5rem;">
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Dashboard View -->
+    <section class="view-section" id="dashboardView">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Dashboard</h1>
+          <p>Resumen de tu actividad y clientes</p>
+        </div>
+        <button class="btn btn-secondary" id="chatBtn">
+          💬 Mensajes
+        </button>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="statTotalClients">0</div>
+          <div class="stat-label">Total Clientes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statActiveToday">0</div>
+          <div class="stat-label">Activos Hoy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statSessionsWeek">0</div>
+          <div class="stat-label">Sesiones Esta Semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statPendingMessages">0</div>
+          <div class="stat-label">Mensajes Pendientes</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <!-- Recent Clients -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Clientes Recientes</h3>
+            <button class="btn btn-secondary btn-sm" id="createClientBtn">+ Nuevo</button>
+          </div>
+          <div class="card-body" id="recentClientsList">
+            <div class="skeleton" style="height: 60px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton" style="height: 60px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton" style="height: 60px;"></div>
+          </div>
+        </div>
+
+        <!-- Recent Sessions -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Sesiones Recientes</h3>
+            <button class="btn btn-ghost btn-sm" onclick="CoachDashboard.showView('history')">Ver Todo</button>
+          </div>
+          <div class="card-body" id="recentSessionsList">
+            <div class="skeleton" style="height: 60px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton" style="height: 60px; margin-bottom: 0.5rem;"></div>
+            <div class="skeleton" style="height: 60px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clients View -->
+    <section class="view-section" id="clientsView" style="display: none;">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Clientes</h1>
+          <p>Gestiona tus asesorados</p>
+        </div>
+        <button class="btn btn-secondary" id="createClientBtn2">+ Nuevo Cliente</button>
+      </div>
+
+      <div class="card">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; color: #666; padding: 2rem;">
+                  Cargando clientes...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Routines View -->
+    <section class="view-section" id="routinesView" style="display: none;">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Rutinas</h1>
+          <p>Diseña rutinas personalizadas</p>
+        </div>
+        <button class="btn btn-secondary" id="createRoutineBtn">+ Nueva Rutina</button>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3 class="empty-title">Gestión de Rutinas</h3>
+            <p class="empty-text">Selecciona un cliente para ver o crear sus rutinas</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exercises View -->
+    <section class="view-section" id="exercisesView" style="display: none;">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Biblioteca de Ejercicios</h1>
+          <p>100+ ejercicios disponibles</p>
+        </div>
+      </div>
+
+      <div id="exercisesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div class="skeleton" style="height: 200px;"></div>
+        <div class="skeleton" style="height: 200px;"></div>
+        <div class="skeleton" style="height: 200px;"></div>
+      </div>
+    </section>
+
+    <!-- History View -->
+    <section class="view-section" id="historyView" style="display: none;">
+      <div class="page-header">
+        <div class="page-title">
+          <h1>Historial de Sesiones</h1>
+          <p>Seguimiento de entrenamientos</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="empty-state">
+            <div class="empty-icon">📈</div>
+            <h3 class="empty-title">Historial</h3>
+            <p class="empty-text">Las sesiones completadas aparecerán aquí</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chat.js"></script>
+  <script src="../js/coach.js"></script>
+  
+  <script>
+    // Set coach initials
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.getCurrentUser();
+      if (user) {
+        document.getElementById('coachAvatar').textContent = user.nombre.charAt(0).toUpperCase();
+      }
+    });
+  </script>
+</body>
+</html>
