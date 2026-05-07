@@ -9,6 +9,7 @@
 
 const CONFIG = {
   SHEET_NAME: 'FITPRO_COACH',
+  SPREADSHEET_ID: '1T1oIZxhBu43SdgKDTVFosTku_h-H5PqKefxOJtat-Yc',
   COACH_EMAIL: 'marcasnt@gmail.com',
   DEFAULT_REST_TIME: 90,
   MAX_EXERCISES_PER_DAY: 6
@@ -147,22 +148,10 @@ function jsonResponse(data) {
 }
 
 function getSpreadsheet() {
-  // Intentar obtener el spreadsheet activo (si el script está vinculado)
-  let ss = SpreadsheetApp.getActiveSpreadsheet();
-  
-  // Si no está vinculado, usar ID específico (modo standalone)
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (!ss) {
-    // REEMPLAZA ESTE ID con el ID de tu spreadsheet FITPRO_COACH
-    // El ID está en la URL del spreadsheet: /d/ID/edit
-    const SPREADSHEET_ID = 'TU_SPREADSHEET_ID_AQUI';
-    
-    if (SPREADSHEET_ID && SPREADSHEET_ID !== 'TU_SPREADSHEET_ID_AQUI') {
-      ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    } else {
-      throw new Error('Spreadsheet no encontrado. Vincula el script a un spreadsheet o configura SPREADSHEET_ID');
-    }
+    throw new Error('Spreadsheet no encontrado. Vincula el script al spreadsheet.');
   }
-  
   return ss;
 }
 
@@ -218,14 +207,24 @@ function formatDate(date) {
 // ============================================
 
 function login(email, password) {
-  const sheet = getSheet('Clientes');
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
+  Logger.log('=== LOGIN DEBUG ===');
+  Logger.log('Email received: ' + email);
+  Logger.log('Password received: ' + password);
+  Logger.log('Password hashed: ' + hashPassword(password));
   
-  for (let i = 1; i < data.length; i++) {
-    const row = data[i];
-    const rowData = {};
-    headers.forEach((h, idx) => rowData[h] = row[idx]);
+  var sheet = getSheet('Clientes');
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  
+  Logger.log('Headers found: ' + headers.join(', '));
+  Logger.log('Total rows: ' + data.length);
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var rowData = {};
+    headers.forEach(function(h, idx) { rowData[h] = row[idx]; });
+    
+    Logger.log('Row ' + i + ' - email: ' + rowData.email + ', hash: ' + rowData.contrasena_hash);
     
     if (rowData.email === email && rowData.contrasena_hash === hashPassword(password)) {
       if (!rowData.activo) {
@@ -249,8 +248,9 @@ function login(email, password) {
         token: token
       };
     }
-  }
-  
+}
+   
+  Logger.log('=== END LOGIN DEBUG ===');
   return { success: false, error: 'Credenciales incorrectas' };
 }
 
