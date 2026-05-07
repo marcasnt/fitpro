@@ -6,14 +6,449 @@
   <title>FITPRO COACH - Mi Rutina</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    /* Client Panel Premium Styles */
+    :root {
+      --accent-primary: #00FF88;
+      --accent-secondary: #00CCFF;
+    }
+
+    body.client-panel {
+      min-height: 100vh;
+      background: #0a0a0f;
+      padding-bottom: 100px;
+    }
+
+    /* Header */
+    .client-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: rgba(18, 18, 24, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .client-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .client-brand h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, rgba(0, 255, 136, 0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+    }
+
+    .client-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #0a0a0f;
+      font-size: 0.875rem;
+    }
+
+    .user-details {
+      display: none;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #fff;
+      font-size: 0.875rem;
+    }
+
+    .user-role {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (min-width: 480px) {
+      .user-details {
+        display: block;
+      }
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px var(--accent-primary);
+    }
+
+    /* Main Content */
+    .workout-section {
+      padding: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .day-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .day-type {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.2) 0%, rgba(0, 204, 255, 0.15) 100%);
+      color: var(--accent-primary);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+
+    .day-header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 0.5rem;
+    }
+
+    .day-header p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    /* Exercise Card */
+    .exercise-card {
+      background: rgba(18, 18, 24, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .exercise-card.completed {
+      border-color: rgba(0, 255, 136, 0.3);
+      opacity: 0.7;
+    }
+
+    .exercise-card:hover {
+      border-color: rgba(0, 255, 136, 0.3);
+    }
+
+    .exercise-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem;
+      cursor: pointer;
+    }
+
+    .exercise-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .exercise-card.completed .exercise-checkbox {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #0a0a0f;
+    }
+
+    .exercise-info {
+      flex: 1;
+    }
+
+    .exercise-name {
+      font-weight: 600;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .exercise-details {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .exercise-toggle {
+      color: rgba(255, 255, 255, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .exercise-card.expanded .exercise-toggle {
+      transform: rotate(180deg);
+    }
+
+    .exercise-body {
+      display: none;
+      padding: 0 1.25rem 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .exercise-card.expanded .exercise-body {
+      display: block;
+    }
+
+    .exercise-image {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    /* Series Tracker */
+    .series-tracker {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .series-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+    }
+
+    .series-label {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.875rem;
+    }
+
+    .series-weight {
+      padding: 0.5rem 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.875rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .series-weight:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+
+    .series-check {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .series-check.checked {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #0a0a0f;
+    }
+
+    /* Timer */
+    .timer-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+
+    .timer-time {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .timer-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .timer-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Complete Button */
+    .complete-btn-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(to top, #0a0a0f 60%, transparent 100%);
+      display: flex;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .btn-complete {
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      border: none;
+      border-radius: 14px;
+      color: #0a0a0f;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.25);
+    }
+
+    .btn-complete:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.35);
+    }
+
+    .btn-complete:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .client-header {
+        padding: 0.75rem 1rem;
+      }
+
+      .workout-section {
+        padding: 1rem;
+      }
+
+      .day-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .exercise-header {
+        padding: 1rem;
+      }
+
+      .exercise-body {
+        padding: 0 1rem 1rem;
+      }
+
+      .series-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  </style>
 </head>
 <body class="client-panel">
   <!-- Header -->
   <header class="client-header">
     <div class="client-brand">
-      <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #00FF88 0%, #00CCFF 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #0D0D0D;">
+      <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #00FF88 0%, #00CCFF 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #0a0a0f;">
         💪
       </div>
       <h2>FITPRO COACH</h2>
@@ -21,9 +456,9 @@
     
     <div class="client-nav">
       <button class="btn btn-ghost btn-sm" id="chatBtn">
-        💬 Mensajes
+        💬
       </button>
-      <div class="user-info" style="margin: 0;">
+      <div class="user-info">
         <div class="user-avatar" id="userAvatar">U</div>
         <div class="user-details">
           <div class="user-name" id="userName">Usuario</div>
@@ -37,8 +472,8 @@
   </header>
 
   <!-- Progress Bar -->
-  <div style="height: 4px; background: #1A1A1A;">
-    <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressBar"></div>
   </div>
 
   <!-- Main Content -->
@@ -47,22 +482,26 @@
     <div class="day-header">
       <span class="day-type" id="dayType">Cargando...</span>
       <h1 id="dayTitle">Mi Rutina</h1>
-      <p style="color: #666;">Completa tus ejercicios y marca cada serie</p>
+      <p>Completa tus ejercicios y marca cada serie</p>
     </div>
 
     <!-- Exercises Container -->
     <div id="exercisesContainer">
       <!-- Los ejercicios se cargan dinámicamente -->
-      <div class="empty-state">
-        <div class="skeleton" style="height: 200px; margin-bottom: 1rem;"></div>
-        <div class="skeleton" style="height: 200px; margin-bottom: 1rem;"></div>
-        <div class="skeleton" style="height: 200px;"></div>
+      <div class="exercise-card loading">
+        <div class="exercise-header">
+          <div class="exercise-checkbox"></div>
+          <div class="exercise-info">
+            <div class="exercise-name">Cargando ejercicio...</div>
+            <div class="exercise-details">3 series x 12 repeticiones</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Complete Session Button -->
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 1.5rem; background: linear-gradient(to top, #0D0D0D 0%, transparent 100%); display: flex; justify-content: center;">
-      <button class="btn btn-primary btn-lg" id="completeSessionBtn" disabled style="box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);">
+    <div class="complete-btn-container">
+      <button class="btn-complete" id="completeSessionBtn" disabled>
         Progreso: 0%
       </button>
     </div>
@@ -82,6 +521,7 @@
       const user = Auth.getCurrentUser();
       if (user) {
         document.getElementById('userAvatar').textContent = user.nombre.charAt(0).toUpperCase();
+        document.getElementById('userName').textContent = user.nombre;
       }
     });
   </script>
