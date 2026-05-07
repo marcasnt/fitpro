@@ -381,7 +381,25 @@ const CoachDashboard = {
   /**
    * Muestra modal para crear rutina
    */
-  showCreateRoutineModal() {
+  async showCreateRoutineModal() {
+    // Load clients if not loaded
+    if (this.clients.length === 0) {
+      const user = Auth.getCurrentUser();
+      try {
+        const result = await Utils.callAPI('getClients', { coachId: user.id });
+        if (result.success) {
+          this.clients = result.clients || [];
+        }
+      } catch (error) {
+        console.error('Error loading clients:', error);
+      }
+    }
+    
+    if (this.clients.length === 0) {
+      Utils.showToast('No hay clientes disponibles', 'error');
+      return;
+    }
+    
     const clientOptions = this.clients.map(c => 
       `<option value="${c.id}">${c.nombre}</option>`
     ).join('');
@@ -518,9 +536,13 @@ const CoachDashboard = {
    * Crea rutina
    */
   async createRoutine() {
+    console.log('createRoutine called');
+    
     const clientId = document.getElementById('routineClient')?.value;
     const day = document.getElementById('routineDay')?.value;
     const type = document.getElementById('routineType')?.value;
+    
+    console.log('Fields:', { clientId, day, type });
     
     if (!clientId || !day || !type) {
       Utils.showToast('Por favor completa todos los campos', 'error');
@@ -533,6 +555,7 @@ const CoachDashboard = {
     Utils.showLoading('Guardando rutina...');
     
     try {
+      console.log('Calling createRoutine API...');
       const result = await Utils.callAPI('createRoutine', {
         clienteId,
         diaSemana: day,
@@ -540,13 +563,16 @@ const CoachDashboard = {
         ejercicios: []
       });
       
+      console.log('Result:', result);
+      
       if (result.success) {
         Utils.showToast('Rutina creada exitosamente', 'success');
         this.showView('routines');
       } else {
-        throw new Error(result.message || 'Error al crear rutina');
+        throw new Error(result.error || 'Error al crear rutina');
       }
     } catch (error) {
+      console.error('Error creating routine:', error);
       Utils.showToast(error.message, 'error');
     } finally {
       Utils.hideLoading();
