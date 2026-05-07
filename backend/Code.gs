@@ -22,7 +22,9 @@ const CONFIG = {
  * Maneja peticiones GET
  */
 function doGet(e) {
-  const action = e.parameter.action;
+  e = e || {};
+  var params = e.parameter || {};
+  var action = params.action;
   
   if (action === 'webapp') {
     return HtmlService.createHtmlOutputFromFile('index')
@@ -40,9 +42,10 @@ function doGet(e) {
 
 /**
  * Maneja peticiones OPTIONS (CORS preflight)
- * Debe retornar 200 OK para que el navegador continúe
+ * Debe retornar 200 OK para el navegador continúe
  */
 function doOptions(e) {
+  e = e || {};
   var output = ContentService.createTextOutput('ok');
   output.setMimeType(ContentService.MimeType.TEXT);
   output.appendHeader('Access-Control-Allow-Origin', '*');
@@ -55,9 +58,14 @@ function doOptions(e) {
  * Maneja peticiones POST
  */
 function doPost(e) {
+  e = e || {};
   try {
-    const data = JSON.parse(e.postData.contents);
-    const action = data.action;
+    var postData = e.postData;
+    if (!postData || !postData.contents) {
+      return jsonResponse({ success: false, error: 'No data received' });
+    }
+    var data = JSON.parse(postData.contents);
+    var action = data.action;
     
     switch(action) {
       // Auth
