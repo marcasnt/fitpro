@@ -133,47 +133,13 @@ const CoachDashboard = {
         this.loadHistory();
         break;
     }
-  },
-  
-/**
- * Crea elemento con atributos - incluyendo onclick directo
- */
-function createElement(tag, attributes = {}, children = []) {
-  const element = document.createElement(tag);
-  
-  Object.entries(attributes).forEach(([key, value]) => {
-    if (key === 'textContent') {
-      element.textContent = value;
-    } else if (key === 'innerHTML') {
-      element.innerHTML = value;
-    } else if (key === 'className') {
-      element.className = value;
-    } else if (key === 'onclick') {
-      if (typeof value === 'function') {
-        element.addEventListener('click', value);
-      } else {
-        element.setAttribute('onclick', value);
-        element.onclick = new Function(value);
-      }
-    } else if (key === 'dataset') {
-      Object.entries(value).forEach(([dataKey, dataValue]) => {
-        element.dataset[dataKey] = dataValue;
-      });
-    } else {
-      element.setAttribute(key, value);
-    }
-  });
-  
-  children.forEach(child => {
-    if (typeof child === 'string') {
-      element.appendChild(document.createTextNode(child));
-    } else {
-      element.appendChild(child);
-    }
-  });
-  
-  return element;
-}
+},
+
+  /**
+   * Carga datos del dashboard
+   */
+  loadDashboardData: async function() {
+    const user = Auth.getCurrentUser();
     
     try {
       // Cargar estadísticas
