@@ -1,0 +1,12 @@
+{
+  "name": "fitpro",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "vercel": "^32.0.0"
+  }
+}

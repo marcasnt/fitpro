@@ -4,13 +4,8 @@
  */
 
 const CONFIG = {
-  // Google Apps Script Web App URL
-  // INSTRUCCIONES:
-  // 1. Ve a tu proyecto de Apps Script
-  // 2. Click en "Implementar" > "Implementar como aplicación web"
-  // 3. Copia la URL generada y pégala aquí abajo
-  // La URL debe terminar en /exec
-  GAS_URL: 'https://script.google.com/macros/s/AKfycbxUcZXq7Mc8w2m9TYnfAMCk6T7I4AjSJYXLBhvMGH9-IVg1Eq1GCbNHYpmYGl6CIWZ8ZA/exec',
+  // Google Apps Script Web App URL - usa proxy local en Vercel
+  GAS_URL: '/api/proxy',
   
   // Google Drive folder ID para imágenes de ejercicios
   DRIVE_FOLDER_ID: '1e2lNu9n33WqPnaOtJj-N2YUVb1jZzfck',

@@ -368,22 +368,11 @@ function hideLoading() {
  */
 async function callAPI(action, data = {}) {
   try {
-    const url = CONFIG.GAS_URL;
-    const response = await fetch(url, {
+    const response = await fetch(CONFIG.GAS_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action,
-        ...data
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...data })
     });
-    
-    if (response.type === 'opaque') {
-      return { success: true, data: {}, message: 'Request sent (no-cors mode)' };
-    }
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -392,27 +381,6 @@ async function callAPI(action, data = {}) {
     const result = await response.json();
     return result;
   } catch (error) {
-    const url = 'https://api.allorigins.win/get?url=' + encodeURIComponent(CONFIG.GAS_URL);
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action,
-        ...data
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    if (data.contents) {
-      return JSON.parse(data.contents);
-    }
-    
     console.error('API Error:', error);
     throw error;
   }
