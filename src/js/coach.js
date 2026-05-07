@@ -10,11 +10,11 @@ const CoachDashboard = {
   currentView: 'dashboard',
   
   elements: {},
-  
+
   /**
    * Inicializa el dashboard
    */
-  async init() {
+  init: async function() {
     // Proteger ruta
     if (!Auth.protectRoute('coach')) return;
     
@@ -125,15 +125,45 @@ const CoachDashboard = {
     }
   },
   
-  /**
-   * Carga datos del dashboard
-   */
-  async loadDashboardData() {
-    const user = Auth.getCurrentUser();
-    
-    if (this.elements.userName) {
-      this.elements.userName.textContent = user.nombre;
+/**
+ * Crea elemento con atributos - incluyendo onclick directo
+ */
+function createElement(tag, attributes = {}, children = []) {
+  const element = document.createElement(tag);
+  
+  Object.entries(attributes).forEach(([key, value]) => {
+    if (key === 'textContent') {
+      element.textContent = value;
+    } else if (key === 'innerHTML') {
+      element.innerHTML = value;
+    } else if (key === 'className') {
+      element.className = value;
+    } else if (key === 'onclick') {
+      if (typeof value === 'function') {
+        element.addEventListener('click', value);
+      } else {
+        element.setAttribute('onclick', value);
+        element.onclick = new Function(value);
+      }
+    } else if (key === 'dataset') {
+      Object.entries(value).forEach(([dataKey, dataValue]) => {
+        element.dataset[dataKey] = dataValue;
+      });
+    } else {
+      element.setAttribute(key, value);
     }
+  });
+  
+  children.forEach(child => {
+    if (typeof child === 'string') {
+      element.appendChild(document.createTextNode(child));
+    } else {
+      element.appendChild(child);
+    }
+  });
+  
+  return element;
+}
     
     try {
       // Cargar estadísticas
@@ -535,13 +565,14 @@ const CoachDashboard = {
   /**
    * Crea rutina
    */
-  async createRoutine() {
+  createRoutine: function() {
     alert('createRoutine clicked!');
     console.log('createRoutine called');
+    console.log('window.CoachDashboard:', window.CoachDashboard);
     
-    const clientIdEl = document.getElementById('routineClient');
-    const dayEl = document.getElementById('routineDay');
-    const typeEl = document.getElementById('routineType');
+    var clientIdEl = document.getElementById('routineClient');
+    var dayEl = document.getElementById('routineDay');
+    var typeEl = document.getElementById('routineType');
     
     if (!clientIdEl || !dayEl || !typeEl) {
       Utils.showToast('Error: Elementos del formulario no encontrados', 'error');
@@ -549,11 +580,11 @@ const CoachDashboard = {
       return;
     }
     
-    const clientId = clientIdEl.value;
-    const day = dayEl.value;
-    const type = typeEl.value;
+    var clientId = clientIdEl.value;
+    var day = dayEl.value;
+    var type = typeEl.value;
     
-    console.log('Fields:', { clientId, day, type });
+    console.log('Fields:', { clientId: clientId, day: day, type: type });
     
     if (!clientId || !day || !type) {
       Utils.showToast('Por favor completa todos los campos', 'error');
@@ -562,28 +593,27 @@ const CoachDashboard = {
     
     Utils.showLoading('Guardando rutina...');
     
-    try {
-      const result = await Utils.callAPI('createRoutine', {
-        clienteId: clientId,
-        diaSemana: day,
-        tipoDia: type,
-        ejercicios: []
-      });
-      
+    var self = this;
+    Utils.callAPI('createRoutine', {
+      clienteId: clientId,
+      diaSemana: day,
+      tipoDia: type,
+      ejercicios: []
+    }).then(function(result) {
       console.log('Result:', result);
+      Utils.hideLoading();
       
       if (result.success) {
         Utils.showToast('Rutina creada exitosamente', 'success');
-        this.showView('routines');
+        self.showView('routines');
       } else {
-        throw new Error(result.error || 'Error al crear rutina');
+        Utils.showToast(result.error || 'Error al crear rutina', 'error');
       }
-    } catch (error) {
+    }).catch(function(error) {
       console.error('Error creating routine:', error);
       Utils.showToast(error.message, 'error');
-    } finally {
       Utils.hideLoading();
-    }
+    });
   },
   
   /**
@@ -795,6 +825,7 @@ const CoachDashboard = {
 // Inicializar al cargar
 document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('.dashboard')) {
+    window.CoachDashboard = CoachDashboard;
     CoachDashboard.init();
   }
 });
