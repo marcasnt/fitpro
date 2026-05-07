@@ -37,9 +37,10 @@ function doGet(e) {
 
 /**
  * Maneja peticiones OPTIONS (CORS preflight)
+ * Debe retornar 200 OK para que el navegador continúe
  */
 function doOptions(e) {
-  return ContentService.createTextOutput('')
+  return ContentService.createTextOutput('ok')
     .setMimeType(ContentService.MimeType.TEXT);
 }
 
@@ -131,10 +132,11 @@ function doPost(e) {
 // ============================================
 
 function jsonResponse(data) {
-  // ContentService permite CORS en Apps Script web apps
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+  // ContentService con JSON que GAS permite desde cualquier origen
+  // cuando la web app está configurada como "Cualquiera, incluso anónimo"
+  var output = ContentService.createTextOutput(JSON.stringify(data));
+  output.setMimeType(ContentService.MimeType.JSON);
+  return output;
 }
 
 function getSpreadsheet() {
