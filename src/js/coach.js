@@ -60,6 +60,11 @@ const CoachDashboard = {
       this.showCreateClientModal();
     });
     
+    // Crear cliente (botón secundario)
+    document.getElementById('createClientBtn2')?.addEventListener('click', () => {
+      this.showCreateClientModal();
+    });
+    
     // Crear rutina
     document.getElementById('createRoutineBtn')?.addEventListener('click', () => {
       this.showCreateRoutineModal();
