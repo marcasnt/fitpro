@@ -201,8 +201,8 @@ function generateUUID() {
 }
 
 function hashPassword(password) {
-  // En producción, el hash ya viene del frontend
-  return password;
+  var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, password);
+  return digest.map(function(b) { return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'); }).join('');
 }
 
 function getToday() {
@@ -227,7 +227,7 @@ function login(email, password) {
     const rowData = {};
     headers.forEach((h, idx) => rowData[h] = row[idx]);
     
-    if (rowData.email === email && rowData.contrasena_hash === password) {
+    if (rowData.email === email && rowData.contrasena_hash === hashPassword(password)) {
       if (!rowData.activo) {
         return { success: false, error: 'Cuenta desactivada' };
       }
@@ -270,7 +270,7 @@ function createUser(data) {
     id,
     data.nombre,
     data.email,
-    data.password,
+    hashPassword(data.password),
     data.telefono || '',
     fechaAlta,
     true,
@@ -946,4 +946,26 @@ function checkInactiveClients() {
       }
     }
   }
+}
+
+function createCoachAccount() {
+  var sheet = getSheet('Clientes');
+  var existing = sheet.createTextFinder('marcasnt@gmail.com').findNext();
+  if (existing) {
+    return { success: false, error: 'El coach ya existe' };
+  }
+  var id = generateUUID();
+  sheet.appendRow([
+    id,
+    'MARVIN CASCANTE',
+    'marcasnt@gmail.com',
+    hashPassword('mamcyj11jm'),
+    '+505 84508617',
+    new Date(),
+    true,
+    '',
+    0,
+    'coach'
+  ]);
+  return { success: true, message: 'Coach creado correctamente' };
 }
