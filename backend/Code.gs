@@ -24,15 +24,18 @@ const CONFIG = {
 function doGet(e) {
   const action = e.parameter.action;
   
-  // Servir HTML si se solicita
   if (action === 'webapp') {
     return HtmlService.createHtmlOutputFromFile('index')
       .setTitle('FITPRO COACH')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
   
-  // API JSON
-  return jsonResponse({ success: true, message: 'FITPRO COACH API v2.0' });
+  var output = ContentService.createTextOutput(JSON.stringify({ success: true, message: 'FITPRO COACH API v2.0' }));
+  output.setMimeType(ContentService.MimeType.JSON);
+  output.appendHeader('Access-Control-Allow-Origin', '*');
+  output.appendHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  output.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
+  return output;
 }
 
 /**
@@ -40,8 +43,12 @@ function doGet(e) {
  * Debe retornar 200 OK para que el navegador continúe
  */
 function doOptions(e) {
-  return ContentService.createTextOutput('ok')
-    .setMimeType(ContentService.MimeType.TEXT);
+  var output = ContentService.createTextOutput('ok');
+  output.setMimeType(ContentService.MimeType.TEXT);
+  output.appendHeader('Access-Control-Allow-Origin', '*');
+  output.appendHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  output.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
+  return output;
 }
 
 /**
@@ -132,10 +139,11 @@ function doPost(e) {
 // ============================================
 
 function jsonResponse(data) {
-  // ContentService con JSON que GAS permite desde cualquier origen
-  // cuando la web app está configurada como "Cualquiera, incluso anónimo"
   var output = ContentService.createTextOutput(JSON.stringify(data));
   output.setMimeType(ContentService.MimeType.JSON);
+  output.appendHeader('Access-Control-Allow-Origin', '*');
+  output.appendHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  output.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
   return output;
 }
 
