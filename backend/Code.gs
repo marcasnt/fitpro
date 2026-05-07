@@ -217,16 +217,31 @@ function login(email, password) {
   var headers = data[0];
   
   Logger.log('Headers found: ' + headers.join(', '));
-  Logger.log('Total rows: ' + data.length);
+  Logger.log('Total rows: ' + (data.length - 1));
   
+  var foundEmail = false;
   for (var i = 1; i < data.length; i++) {
     var row = data[i];
     var rowData = {};
     headers.forEach(function(h, idx) { rowData[h] = row[idx]; });
     
-    Logger.log('Row ' + i + ' - email: ' + rowData.email + ', hash: ' + rowData.contrasena_hash);
-    
-    if (rowData.email === email && rowData.contrasena_hash === hashPassword(password)) {
+    if (rowData.email === email) {
+      foundEmail = true;
+      Logger.log('Email FOUND in row ' + i);
+      Logger.log('Stored hash: ' + rowData.contrasena_hash);
+      Logger.log('Password hash match: ' + (rowData.contrasena_hash === hashPassword(password)));
+    }
+  }
+  
+  if (!foundEmail) {
+    Logger.log('Email NOT FOUND in any row');
+    for (var j = 1; j < Math.min(4, data.length); j++) {
+      var r = data[j];
+      Logger.log('Row ' + j + ' emails: ' + r[2]); // email is usually index 2
+    }
+  }
+  
+  if (rowData.email === email && (rowData.contrasena_hash === hashPassword(password) || rowData.contrasena_hash === password)) {
       if (!rowData.activo) {
         return { success: false, error: 'Cuenta desactivada' };
       }
@@ -249,7 +264,8 @@ function login(email, password) {
       };
     }
 }
-   
+  }
+  
   Logger.log('=== END LOGIN DEBUG ===');
   return { success: false, error: 'Credenciales incorrectas' };
 }
