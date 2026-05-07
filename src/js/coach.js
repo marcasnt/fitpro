@@ -290,8 +290,8 @@ const CoachDashboard = {
           <input type="email" class="form-input" id="newClientEmail" placeholder="ejemplo@email.com">
         </div>
         <div class="form-group">
-          <label class="form-label">Teléfono</label>
-          <input type="tel" class="form-input" id="newClientPhone" placeholder="+58 412 123 4567">
+          <label class="form-label">Nombre de usuario</label>
+          <input type="text" class="form-input" id="newClientPhone" placeholder="Ej: carlosm">
         </div>
         <div class="form-group">
           <label class="form-label">Contraseña temporal</label>
