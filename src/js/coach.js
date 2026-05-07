@@ -832,10 +832,12 @@ function createElement(tag, attributes = {}, children = []) {
   }
 };
 
+// Exponer inmediatamente para que funcione con inline onclick
+window.CoachDashboard = CoachDashboard;
+
 // Inicializar al cargar
 document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('.dashboard')) {
-    window.CoachDashboard = CoachDashboard;
     CoachDashboard.init();
   }
 });
