@@ -260,12 +260,11 @@ function login(email, password) {
           rol: rowData.rol || 'cliente',
           activo: rowData.activo
         },
-        token: token
+token: token
       };
     }
-}
   }
-  
+   
   Logger.log('=== END LOGIN DEBUG ===');
   return { success: false, error: 'Credenciales incorrectas' };
 }
