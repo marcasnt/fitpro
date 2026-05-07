@@ -10,7 +10,7 @@ const CONFIG = {
   // 2. Click en "Implementar" > "Implementar como aplicación web"
   // 3. Copia la URL generada y pégala aquí abajo
   // La URL debe terminar en /exec
-  GAS_URL: 'https://script.google.com/macros/s/AKfycbz4JrDhWU4zifO5lLkoWx9AN638mSq003d7-g8CAlzV4H7EVRjtNu0D_jXLRM7jt6Oo/exec',
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbxUcZXq7Mc8w2m9TYnfAMCk6T7I4AjSJYXLBhvMGH9-IVg1Eq1GCbNHYpmYGl6CIWZ8ZA/exec',
   
   // Google Drive folder ID para imágenes de ejercicios
   DRIVE_FOLDER_ID: '1e2lNu9n33WqPnaOtJj-N2YUVb1jZzfck',
