@@ -536,11 +536,22 @@ const CoachDashboard = {
    * Crea rutina
    */
   async createRoutine() {
+    alert('createRoutine clicked!');
     console.log('createRoutine called');
     
-    const clientId = document.getElementById('routineClient')?.value;
-    const day = document.getElementById('routineDay')?.value;
-    const type = document.getElementById('routineType')?.value;
+    const clientIdEl = document.getElementById('routineClient');
+    const dayEl = document.getElementById('routineDay');
+    const typeEl = document.getElementById('routineType');
+    
+    if (!clientIdEl || !dayEl || !typeEl) {
+      Utils.showToast('Error: Elementos del formulario no encontrados', 'error');
+      console.log('Elements not found');
+      return;
+    }
+    
+    const clientId = clientIdEl.value;
+    const day = dayEl.value;
+    const type = typeEl.value;
     
     console.log('Fields:', { clientId, day, type });
     
@@ -549,15 +560,11 @@ const CoachDashboard = {
       return;
     }
     
-    // TODO: Recopilar ejercicios de las filas
-    // Por ahora, crear rutina simple
-    
     Utils.showLoading('Guardando rutina...');
     
     try {
-      console.log('Calling createRoutine API...');
       const result = await Utils.callAPI('createRoutine', {
-        clienteId,
+        clienteId: clientId,
         diaSemana: day,
         tipoDia: type,
         ejercicios: []
