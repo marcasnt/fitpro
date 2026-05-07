@@ -229,42 +229,35 @@ function login(email, password) {
       foundEmail = true;
       Logger.log('Email FOUND in row ' + i);
       Logger.log('Stored hash: ' + rowData.contrasena_hash);
-      Logger.log('Password hash match: ' + (rowData.contrasena_hash === hashPassword(password)));
-    }
-  }
-  
-  if (!foundEmail) {
-    Logger.log('Email NOT FOUND in any row');
-    for (var j = 1; j < Math.min(4, data.length); j++) {
-      var r = data[j];
-      Logger.log('Row ' + j + ' emails: ' + r[2]); // email is usually index 2
-    }
-  }
-  
-  if (rowData.email === email && (rowData.contrasena_hash === hashPassword(password) || rowData.contrasena_hash === password)) {
-      if (!rowData.activo) {
-        return { success: false, error: 'Cuenta desactivada' };
+      Logger.log('Password hashed to compare: ' + hashPassword(password));
+      Logger.log('Match (hashed): ' + (rowData.contrasena_hash === hashPassword(password)));
+      Logger.log('Match (plain): ' + (rowData.contrasena_hash === password));
+      
+      if (rowData.contrasena_hash === hashPassword(password) || rowData.contrasena_hash === password) {
+        if (!rowData.activo) {
+          return { success: false, error: 'Cuenta desactivada' };
+        }
+        
+        var token = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, 
+          email + Date.now()).map(function(b) { return (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'); }).join('');
+        
+        return {
+          success: true,
+          user: {
+            id: rowData.id,
+            nombre: rowData.nombre,
+            email: rowData.email,
+            telefono: rowData.telefono,
+            rol: rowData.rol || 'cliente',
+            activo: rowData.activo
+          },
+          token: token
+        };
       }
-      
-      // Generar token simple
-      const token = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, 
-        email + Date.now()).map(b => (b < 0 ? b + 256 : b).toString(16).padStart(2, '0')).join('');
-      
-      return {
-        success: true,
-        user: {
-          id: rowData.id,
-          nombre: rowData.nombre,
-          email: rowData.email,
-          telefono: rowData.telefono,
-          rol: rowData.rol || 'cliente',
-          activo: rowData.activo
-        },
-token: token
-      };
     }
   }
-   
+  
+  Logger.log('Final: foundEmail=' + foundEmail);
   Logger.log('=== END LOGIN DEBUG ===');
   return { success: false, error: 'Credenciales incorrectas' };
 }
