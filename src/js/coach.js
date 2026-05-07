@@ -317,7 +317,7 @@ const CoachDashboard = {
         { 
           text: 'Crear Cliente', 
           className: 'btn-primary',
-          onClick: () => this.createClient()
+          onClick: () => window.CoachDashboard?.createClient()
         }
       ]
     );
@@ -451,7 +451,7 @@ const CoachDashboard = {
         { 
           text: 'Guardar Rutina', 
           className: 'btn-primary',
-          onClick: () => this.createRoutine()
+          onClick: () => window.CoachDashboard?.createRoutine()
         }
       ]
     );
