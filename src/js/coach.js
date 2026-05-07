@@ -313,10 +313,14 @@ const CoachDashboard = {
    * Crea nuevo cliente
    */
   async createClient() {
+    console.log('createClient called');
+    
     const name = document.getElementById('newClientName')?.value.trim();
     const email = document.getElementById('newClientEmail')?.value.trim();
     const phone = document.getElementById('newClientPhone')?.value.trim();
     const password = document.getElementById('newClientPassword')?.value;
+    
+    console.log('Fields:', { name, email, phone, password });
     
     if (!name || !email || !password) {
       Utils.showToast('Por favor completa todos los campos', 'error');
@@ -336,12 +340,15 @@ const CoachDashboard = {
     Utils.showLoading('Creando cliente...');
     
     try {
+      console.log('Calling Auth.createClient...');
       const result = await Auth.createClient({
         nombre: name,
         email: email,
         telefono: phone,
         password: password
       });
+      
+      console.log('Result:', result);
       
       if (result.success) {
         Utils.showToast('Cliente creado exitosamente', 'success');
@@ -350,6 +357,7 @@ const CoachDashboard = {
         throw new Error(result.error || 'Error al crear cliente');
       }
     } catch (error) {
+      console.error('Error creating client:', error);
       Utils.showToast(error.message, 'error');
     } finally {
       Utils.hideLoading();

@@ -158,6 +158,8 @@ function createElement(tag, attributes = {}, children = []) {
       element.innerHTML = value;
     } else if (key === 'className') {
       element.className = value;
+    } else if (key === 'onclick') {
+      element.addEventListener('click', value);
     } else if (key === 'dataset') {
       Object.entries(value).forEach(([dataKey, dataValue]) => {
         element.dataset[dataKey] = dataValue;
