@@ -368,7 +368,8 @@ function hideLoading() {
  */
 async function callAPI(action, data = {}) {
   try {
-    const response = await fetch(CONFIG.GAS_URL, {
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(CONFIG.GAS_URL);
+    const response = await fetch(proxyUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
