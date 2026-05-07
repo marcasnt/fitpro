@@ -1,7 +1,11 @@
 /**
- * FITPRO COACH - Coach Dashboard
- * Dashboard principal del coach
- */
+  * FITPRO COACH - Coach Dashboard
+  * Dashboard principal del coach
+  */
+
+console.log('coach.js loading...');
+console.log('Auth defined:', typeof Auth !== 'undefined');
+console.log('Utils defined:', typeof Utils !== 'undefined');
 
 const CoachDashboard = {
   clients: [],
@@ -15,9 +19,15 @@ const CoachDashboard = {
    * Inicializa el dashboard
    */
   init: async function() {
-    // Proteger ruta
-    if (!Auth.protectRoute('coach')) return;
+    console.log('CoachDashboard.init called');
     
+    // Proteger ruta
+    if (!Auth.protectRoute('coach')) {
+      console.log('protectRoute returned false');
+      return;
+    }
+    
+    console.log('protectRoute passed, caching elements...');
     this.cacheElements();
     this.bindEvents();
     this.bindNavigation();
