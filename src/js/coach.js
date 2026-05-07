@@ -244,6 +244,20 @@ const CoachDashboard = {
    */
   async loadClients() {
     const container = document.getElementById('clientsTableBody');
+    
+    // Fetch clients from API if not loaded
+    if (this.clients.length === 0) {
+      const user = Auth.getCurrentUser();
+      try {
+        const result = await Utils.callAPI('getClients', { coachId: user.id });
+        if (result.success) {
+          this.clients = result.clients || [];
+        }
+      } catch (error) {
+        console.error('Error loading clients:', error);
+      }
+    }
+    
     if (!container || this.clients.length === 0) {
       if (container) container.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #666;">No hay clientes</td></tr>';
       return;
